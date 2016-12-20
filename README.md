@@ -13,19 +13,8 @@ PTT文章爬蟲
  
 
     "a_ID": 編號,
-    "b_作者": 作者名,
     "c_標題": 標題,
     "d_日期": 發文時間,
-    "e_ip": 發文ip,
-    "f_內文": 內文,
-    "g_推文": {
-        "推文編號": {
-            "狀態": 推 or 噓 or →,
-            "留言內容": 留言內容,
-            "留言時間": 留言時間,
-            "留言者": 留言者
-        }
-    },
     "h_推文總數": {
         "all": 推文數目,
         "b": 噓數,
@@ -39,12 +28,16 @@ Python 2.7.3
 
 ### 執行方法
 
-    $ python pttcrawler.py [版名]  [抓取頁數]
-    
+    $ python pttcrawler.py 
+	
+	#已經限制在BASEBALL版 
+	條件為wordlist
+    頁數也調整為2016中職相關頁面
+	
 ### 範例
-  爬PTT Gossiping版 2頁 文章內容
+  爬PTT 棒球版 2頁 文章內容
 
-    $ python pttcrawler.py  Gossiping  2
+    $ python pttcrawler.py  
     
   假設總共有100頁，則會爬取
   
