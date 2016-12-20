@@ -20,6 +20,9 @@ rs=requests.session()
 res=rs.post('https://www.ptt.cc/ask/over18',verify=False,data=load)
 FILENAME=""
 
+
+#2260~4500
+
 def PageCount(PttName):
     res=rs.get('https://www.ptt.cc/bbs/'+PttName+'/index.html',verify=False)
     soup=BeautifulSoup(res.text,'html.parser')
@@ -27,11 +30,11 @@ def PageCount(PttName):
     ALLpage=int(getPageNumber(ALLpageURL))+1
     return  ALLpage 
 
-def crawler(PttName,ParsingPage):
+def crawler(PttName):
         ALLpage=PageCount(PttName)
         g_id = 0;
  
-	for number  in range(ALLpage, ALLpage-int(ParsingPage),-1):
+	for number  in range(2260, 4501,+1):
             res=rs.get('https://www.ptt.cc/bbs/'+PttName+'/index'+str(number)+'.html',verify=False)
             soup = BeautifulSoup(res.text,'html.parser')
 	    for tag in soup.select('div.title'):
@@ -80,6 +83,12 @@ def parseGos(link , g_id):
         #print 'content:',main_content
         
         # message
+
+        wordList = ['台灣','洪一中','中職','職棒','中華','象','獅','猿','牛','林智勝','爪','lamigo','統一','中信','兄弟','義大','吱','喵','午','犀','陳鴻文','鄭凱文','蔣','志豪','彭政','大師兄','葉總','蝦','林哲瑄','胡金龍','林益全','高國輝','郭泰源','高志綱','N4','鄭鎧文','小胖','大王','王柏融','太子','洪總','洪中','陽耀','鄉長','鋒']
+        # wordList = ['象','新聞']
+        t = title.encode('utf-8')
+        isMatch = False
+
         num , g , b , n ,message = 0,0,0,0,{}
         for tag in soup.select('div.push'):
                 num += 1
@@ -105,11 +114,28 @@ def parseGos(link , g_id):
   
         messageNum = {"g":g,"b":b,"n":n,"all":num}
         # json-data  type(d) dict
-          
-        d={ "a_ID":g_id , "b_作者":author.encode('utf-8'), "c_標題":title.encode('utf-8'), "d_日期":date.encode('utf-8'),
-            "e_ip":ip.encode('utf-8'), "f_內文":main_content.encode('utf-8'), "g_推文":message,"h_推文總數":messageNum}
-        json_data = json.dumps(d,ensure_ascii=False,indent=4,sort_keys=True)+','
-	store(json_data) 
+        
+        # wordList = ['炸裂','新聞']
+        # t = title.encode('utf-8')
+        # isMatch = False
+        for word in wordList:
+            if word in t:
+                isMatch = True
+        # if  '中職' in ,title.encode('utf-8') or '中華' in title.encode('utf-8') or '林智勝' in title.encode('utf-8') or '象' in title.encode('utf-8') or '獅' in title.encode('utf-8') or '牛' in title.encode('utf-8') or '猿' in title.encode('utf-8') or,'鋒' in title.encode('utf-8') or :
+            
+            if isMatch == True:    
+            # if i in title.encode('utf-8') :
+                d={ "a_ID":g_id ,
+                    #"b_作者":author.encode('utf-8'),
+                    "c_標題":title.encode('utf-8'), "d_日期":date.encode('utf-8'),
+                    #"e_ip":ip.encode('utf-8'),
+                    #"f_內文":main_content.encode('utf-8'), 
+                    #"g_推文":message,
+                    "h_推文總數":messageNum}
+                break
+        json_data = json.dumps(d,ensure_ascii=False,indent=4,sort_keys=True)+',' 
+        store(json_data)
+     
 
 def store(data):
     with open(FILENAME, 'a') as f:
@@ -129,11 +155,11 @@ def getPageNumber(content) :
 
 if __name__ == "__main__":  
    PttName = str(sys.argv[1])
-   ParsingPage = int(sys.argv[2])
+   #ParsingPage = int(sys.argv[2])
    FILENAME='data-'+PttName+'-'+datetime.now().strftime('%Y-%m-%d-%H-%M-%S')+'.json'
    store('[') 
    print 'Start parsing [',PttName,']....'
-   crawler(PttName,ParsingPage)
+   crawler(PttName)
    store(']') 
    
 
@@ -143,3 +169,9 @@ if __name__ == "__main__":
         #f.write(p.replace(',]',']'))
         f.write(p[:-2]+']')   
  
+# def match(list):
+#     tag = True
+#     for i in list:
+#         if list.T  
+#             tag =false
+#     retrun tag
